@@ -1,0 +1,633 @@
+/* assets/css/style.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #111C30;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    background-color: #1A2A47;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    border-top: 5px solid #D4AF37;
+}
+
+.login-logo {
+    width: 120px;
+    margin-bottom: 25px;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.login-container h2 {
+    color: #D4AF37;
+    margin-bottom: 25px;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    background-color: #0f172a;
+    color: #ffffff;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #D4AF37;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.btn-gold {
+    width: 100%;
+    padding: 14px;
+    background-color: #D4AF37;
+    color: #111C30;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    margin-top: 10px;
+}
+
+.btn-gold:hover {
+    background-color: #CFA052;
+}
+
+.btn-gold:active {
+    transform: scale(0.98);
+}
+
+.error-msg {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* --- Dashboard & Scanner Styles --- */
+.dashboard-header {
+    background-color: #1A2A47;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #D4AF37;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.dashboard-header img {
+    height: 40px;
+    border-radius: 50%;
+}
+
+.dashboard-header h1 {
+    color: #D4AF37;
+    font-size: 20px;
+}
+
+.logout-btn {
+    background-color: transparent;
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #ff6b6b;
+    color: #fff;
+}
+
+.main-container {
+    margin-top: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.scanner-box {
+    background-color: #1A2A47;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+#reader {
+    width: 100%;
+    border: 2px solid #D4AF37;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #0f172a;
+}
+
+.member-card {
+    background-color: #1A2A47;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
+    display: none; /* Nakatago hanggang may ma-scan */
+    border-top: 5px solid #D4AF37;
+}
+
+.member-info h3 {
+    color: #D4AF37;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.member-info p {
+    color: #cbd5e1;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.point-balance {
+    font-size: 32px;
+    font-weight: bold;
+    color: #fff;
+    background: #0f172a;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #334155;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-secondary {
+    background-color: #334155;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #475569;
+}
+
+/* --- Modal Styles --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(17, 28, 48, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #1A2A47;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    border-top: 5px solid #D4AF37;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.modal-content select {
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    background: #0f172a;
+    color: #fff;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+/* --- Search Bar Styles --- */
+.search-container {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    gap: 10px;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    background-color: #0f172a;
+    color: #ffffff;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: #D4AF37;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #1A2A47;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    margin-top: 5px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 50;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.search-result-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #334155;
+    cursor: pointer;
+    color: #cbd5e1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.search-result-item:hover {
+    background-color: #334155;
+    color: #D4AF37;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+/* --- Data Table Styles --- */
+.table-container {
+    width: 100%;
+    max-width: 1000px;
+    background-color: #1A2A47;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    overflow-x: auto; /* Para scrollable sa mobile */
+    border-top: 5px solid #D4AF37;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #ffffff;
+    min-width: 600px; /* Para hindi masyadong sumikip sa mobile */
+}
+
+table th, table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+}
+
+table th {
+    background-color: #0f172a;
+    color: #D4AF37;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+table tr:hover {
+    background-color: #334155;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block; /* Pinapanatili ang hugis ng background */
+    white-space: nowrap; /* Pinipigilan ang paghati ng salita sa dalawang linya */
+}
+
+.badge-active { 
+    background-color: rgba(74, 222, 128, 0.1); 
+    color: #4ade80; 
+    border: 1px solid #4ade80; 
+}
+
+.badge-suspended { 
+    background-color: rgba(255, 107, 107, 0.1); 
+    color: #ff6b6b; 
+    border: 1px solid #ff6b6b; 
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* --- Forms & Action Buttons Styles --- */
+.action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    margin-right: 5px;
+    transition: 0.2s;
+}
+
+.btn-edit { background-color: #3b82f6; color: #fff; }
+.btn-edit:hover { background-color: #2563eb; }
+
+.btn-toggle { background-color: #f59e0b; color: #fff; }
+.btn-toggle:hover { background-color: #d97706; }
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-top: 15px;
+}
+
+.modal-content label {
+    color: #cbd5e1;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #0f172a;
+    color: #fff;
+    border: 1px solid #334155;
+    border-radius: 6px;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: #D4AF37;
+}
+
+/* --- Navigation & Burger Menu Styles --- */
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #D4AF37;
+}
+
+.nav-links a.active-link {
+    color: #D4AF37;
+    font-weight: bold;
+}
+
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background-color: #D4AF37;
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Mobile View (Below 768px) */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+    
+    .nav-links {
+        display: none; /* Nakatago by default sa mobile */
+        flex-direction: column;
+        position: absolute;
+        top: 70px; /* Lalabas sa ilalim ng header */
+        right: 20px;
+        background-color: #1A2A47;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        border-top: 3px solid #D4AF37;
+        width: 200px;
+        align-items: flex-start;
+    }
+    
+    .nav-links.show-menu {
+        display: flex;
+    }
+
+    .logout-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+}
+
+/* --- Analytics KPI Cards --- */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.kpi-card {
+    background-color: #1A2A47;
+    padding: 20px;
+    border-radius: 12px;
+    border-top: 4px solid #D4AF37;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.kpi-card h4 {
+    color: #cbd5e1;
+    font-size: 13px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.kpi-card .kpi-value {
+    color: #D4AF37;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+/* --- DataTables Dark Theme Override --- */
+.dataTables_wrapper {
+    margin-top: 15px;
+}
+.dataTables_wrapper .dataTables_length, 
+.dataTables_wrapper .dataTables_filter, 
+.dataTables_wrapper .dataTables_info, 
+.dataTables_wrapper .dataTables_paginate {
+    color: #cbd5e1 !important;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    background-color: #0f172a;
+    color: #ffffff;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-left: 10px;
+}
+.dataTables_wrapper .dataTables_filter input:focus {
+    outline: none;
+    border-color: #D4AF37;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: #cbd5e1 !important;
+    border-radius: 6px !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, 
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: transparent !important;
+    border: 1px solid #D4AF37 !important;
+    color: #D4AF37 !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #334155 !important;
+    border: 1px solid transparent !important;
+    color: #D4AF37 !important;
+}
+table.dataTable.no-footer {
+    border-bottom: 1px solid #334155 !important;
+}
+
+/* --- Main Dashboard Specific Styles --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.dashboard-panel {
+    background-color: #1A2A47;
+    padding: 20px;
+    border-radius: 12px;
+    border-top: 4px solid #D4AF37;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #334155;
+}
+
+.leaderboard-list li:last-child {
+    border-bottom: none;
+}
+
+.rank-badge {
+    background: #0f172a;
+    color: #cbd5e1;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 14px;
+    border: 1px solid #334155;
+}
+
+/* Gold, Silver, Bronze para sa Top 3 */
+.rank-1 .rank-badge { background: rgba(212, 175, 55, 0.2); color: #D4AF37; border-color: #D4AF37; }
+.rank-2 .rank-badge { background: rgba(148, 163, 184, 0.2); color: #94a3b8; border-color: #94a3b8; }
+.rank-3 .rank-badge { background: rgba(180, 83, 9, 0.2); color: #b45309; border-color: #b45309; }
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Magiging patong-patong sa mobile */
+    }
+}
