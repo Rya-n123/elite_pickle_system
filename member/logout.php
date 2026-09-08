@@ -3,6 +3,6 @@
 session_start();
 session_unset();
 session_destroy();
-header("Location: login");
+header("Location: ../index"); // Babalik sa unified login page
 exit();
 ?>

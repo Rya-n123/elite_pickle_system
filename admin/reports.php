@@ -148,7 +148,7 @@ try {
                             $excessForfeited = max(0, $pointsBefore - $cost);
                         ?>
                             <tr>
-                                <td data-date="<?= date('Y-m-d', strtotime($log['redeemed_at'])) ?>" style="color: #cbd5e1; font-size: 13px;"><?= date('M d, Y h:i A', strtotime($log['redeemed_at'])) ?></td>
+                                <td data-order="<?= $log['redeemed_at'] ?>" data-date="<?= date('Y-m-d', strtotime($log['redeemed_at'])) ?>" style="color: #cbd5e1; font-size: 13px;"><?= date('M d, Y h:i A', strtotime($log['redeemed_at'])) ?></td>
                                 <td style="font-family: monospace; color: #94a3b8;"><?= htmlspecialchars($log['qr_code']) ?></td>
                                 <td><strong><?= htmlspecialchars($log['first_name'] . ' ' . $log['last_name']) ?></strong></td>
                                 <td style="color: #D4AF37; font-weight: bold;"><?= htmlspecialchars($log['reward_name']) ?></td>
@@ -185,7 +185,7 @@ try {
                     <?php if (count($pointLogs) > 0): ?>
                         <?php foreach ($pointLogs as $log): ?>
                             <tr>
-                                <td data-date="<?= date('Y-m-d', strtotime($log['transaction_date'])) ?>" style="color: #cbd5e1; font-size: 13px;"><?= date('M d, Y h:i A', strtotime($log['transaction_date'])) ?></td>
+                                <td data-order="<?= $log['transaction_date'] ?>" data-date="<?= date('Y-m-d', strtotime($log['transaction_date'])) ?>" style="color: #cbd5e1; font-size: 13px;"><?= date('M d, Y h:i A', strtotime($log['transaction_date'])) ?></td>
                                 <td style="font-family: monospace; color: #94a3b8;"><?= htmlspecialchars($log['qr_code']) ?></td>
                                 <td><strong><?= htmlspecialchars($log['first_name'] . ' ' . $log['last_name']) ?></strong></td>
                                 <td>
@@ -236,6 +236,7 @@ try {
             dtTables = $('table').DataTable({
                 "pageLength": 10,
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                "order": [[0, "desc"]], /* 0 ibig sabihin ay 1st column, desc ibig sabihin latest sa taas */
                 "language": {
                     "search": "Keyword search:"
                 }

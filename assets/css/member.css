@@ -1,0 +1,306 @@
+/* assets/css/member.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #080f1e; /* Mas dark na blue para lumutang ang cards */
+    color: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Premium Header */
+.portal-header {
+    background: linear-gradient(135deg, #1A2A47 0%, #0f172a 100%);
+    padding: 30px 20px 20px;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.portal-header img {
+    width: 75px;
+    border-radius: 50%;
+    border: 2px solid #D4AF37;
+    padding: 3px;
+    background: #0f172a;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    margin-bottom: 12px;
+}
+
+.portal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.btn-logout {
+    color: #ef4444;
+    font-size: 13px;
+    text-decoration: none;
+    margin-top: 8px;
+    display: inline-block;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-logout:hover { color: #f87171; }
+
+/* Main Container */
+.member-container {
+    max-width: 480px;
+    width: 100%;
+    margin: 25px auto 50px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* Digital VIP Card (Points Display) */
+.vip-card {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 16px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 3px solid #D4AF37;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.vip-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.vip-card .label {
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.vip-card .points {
+    font-size: 72px;
+    font-weight: 700;
+    color: #D4AF37;
+    line-height: 1;
+    text-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
+}
+
+.vip-card .status {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Warning Banner */
+.warning-banner {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-left: 4px solid #f59e0b;
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+}
+
+.warning-banner strong {
+    color: #fbd38d;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.warning-banner span {
+    color: #cbd5e1;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Section Titles */
+.section-title {
+    color: #f1f5f9;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 30px 0 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.5) 0%, transparent 100%);
+}
+
+/* Modern Reward Cards */
+.reward-card {
+    background: #1e293b;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.02);
+    transition: transform 0.2s;
+}
+
+.reward-card:active { transform: scale(0.98); }
+
+.reward-name {
+    color: #f8fafc;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.reward-points {
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* Activity Table */
+.activity-list {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.activity-list td {
+    background: #1e293b;
+    padding: 15px;
+}
+
+.activity-list td:first-child {
+    border-radius: 12px 0 0 12px;
+}
+
+.activity-list td:last-child {
+    border-radius: 0 12px 12px 0;
+    text-align: right;
+    font-weight: 700;
+    font-size: 15px;
+    color: #4ade80;
+    white-space: nowrap;
+}
+
+.activity-title {
+    display: block;
+    color: #f1f5f9;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.activity-date {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* --- Modern Animations & Effects --- */
+
+/* 1. VIP Card Gold Glow Pulse */
+@keyframes pulseGlow {
+    0% { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(212, 175, 55, 0.2); }
+    70% { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 0 15px rgba(212, 175, 55, 0); }
+    100% { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(212, 175, 55, 0); }
+}
+
+.vip-card {
+    animation: pulseGlow 3s infinite;
+}
+
+/* 2. Staggered Fade-In Up (Para sa Cards at List) */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* I-a-apply natin ito sa mga reward cards at table rows */
+.reward-card {
+    opacity: 0;
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.activity-list tr {
+    opacity: 0;
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Delay tricks para sunud-sunod ang paglabas */
+.reward-card:nth-child(1) { animation-delay: 0.1s; }
+.reward-card:nth-child(2) { animation-delay: 0.2s; }
+.reward-card:nth-child(3) { animation-delay: 0.3s; }
+.reward-card:nth-child(4) { animation-delay: 0.4s; }
+.reward-card:nth-child(5) { animation-delay: 0.5s; }
+
+.activity-list tr:nth-child(1) { animation-delay: 0.3s; }
+.activity-list tr:nth-child(2) { animation-delay: 0.4s; }
+.activity-list tr:nth-child(3) { animation-delay: 0.5s; }
+.activity-list tr:nth-child(4) { animation-delay: 0.6s; }
+.activity-list tr:nth-child(5) { animation-delay: 0.7s; }
+
+/* Status Text Animation */
+.status span {
+    display: inline-block;
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* --- Next Reward Progress Bar --- */
+.progress-container {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: left;
+}
+
+.progress-text {
+    font-size: 13px;
+    color: #cbd5e1;
+    margin-bottom: 10px;
+}
+
+.progress-text strong {
+    color: #fde047; /* Bright gold para ma-highlight ang points */
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: #0f172a;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #D4AF37, #fde047);
+    width: 0; /* Default ay 0, papahabain ng JavaScript */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}

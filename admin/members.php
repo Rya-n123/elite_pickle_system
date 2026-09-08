@@ -13,6 +13,10 @@ try {
     // Kunin lahat ng members, pinakabago muna
     $stmt = $pdo->query("SELECT * FROM members ORDER BY created_at DESC");
     $members = $stmt->fetchAll();
+
+    // Kunin ang Available Rewards para sa Redeem Dropdown
+    $rewStmt = $pdo->query("SELECT id, reward_name, points_required FROM rewards WHERE status = 'Available' ORDER BY points_required ASC");
+    $availableRewards = $rewStmt->fetchAll();
 } catch (PDOException $e) {
     die("Database error: " . $e->getMessage());
 }
@@ -98,6 +102,11 @@ try {
                                     ?>
                                 </td>
                                 <td>
+                                    <!-- Bagong Redeem Button -->
+                                    <button class="action-btn" style="background-color: #f59e0b; color: #fff; margin-right: 5px;" 
+                                        onclick="openRedeemModal(<?= $member['id'] ?>, '<?= addslashes($member['first_name'] . ' ' . $member['last_name']) ?>', <?= $member['point_balance'] ?>, '<?= empty($member['next_eligible_date']) ? '' : $member['next_eligible_date'] ?>')">
+                                        Redeem
+                                    </button>
                                     <button class="action-btn btn-edit" onclick="editMember(<?= $member['id'] ?>, '<?= addslashes($member['first_name']) ?>', '<?= addslashes($member['last_name']) ?>', '<?= addslashes($member['qr_code']) ?>')">Edit</button>
                                     <button class="action-btn btn-toggle" onclick="toggleStatus(<?= $member['id'] ?>, '<?= $member['status'] ?>')">
                                         <?= $member['status'] === 'Active' ? 'Suspend' : 'Activate' ?>
@@ -302,6 +311,80 @@ try {
                         if (data.success) {
                             Swal.fire('Success!', `Member has been ${action.toLowerCase()}d.`, 'success')
                             .then(() => location.reload());
+                        } else {
+                            Swal.fire('Error', data.error, 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        // --- Manual Redeem Logic ---
+        const availableRewards = <?= json_encode($availableRewards) ?>;
+
+        function openRedeemModal(id, name, points, nextEligible) {
+            const today = new Date().toISOString().split('T')[0];
+            if (nextEligible && nextEligible > today) {
+                Swal.fire({
+                    icon: 'warning', title: 'Cooldown Active',
+                    text: `${name} is not eligible to redeem until ${nextEligible}.`,
+                    background: '#1A2A47', color: '#fff'
+                });
+                return;
+            }
+
+            if (points <= 0) {
+                Swal.fire({
+                    icon: 'warning', title: 'No Points',
+                    text: `${name} has 0 points.`,
+                    background: '#1A2A47', color: '#fff'
+                });
+                return;
+            }
+
+            let optionsHtml = '<option value="">-- Select a Reward --</option>';
+            availableRewards.forEach(r => {
+                const disabled = points < r.points_required ? 'disabled' : '';
+                const color = points < r.points_required ? 'color: #ff6b6b;' : 'color: #4ade80;';
+                optionsHtml += `<option value="${r.id}" ${disabled} style="${color}">${r.reward_name} (${r.points_required} pts)</option>`;
+            });
+
+            Swal.fire({
+                title: 'Redeem Reward',
+                html: `
+                    <div style="color: #cbd5e1; margin-bottom: 15px; font-size: 14px;">
+                        Member: <strong style="color: #fff;">${name}</strong><br>
+                        Current Points: <strong style="color: #D4AF37; font-size: 18px;">${points}</strong>
+                    </div>
+                    <select id="reward_select" style="width: 100%; padding: 12px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 6px;">
+                        ${optionsHtml}
+                    </select>
+                    <div style="font-size: 12px; color: #f59e0b; margin-top: 15px; background: rgba(245, 158, 11, 0.1); padding: 10px; border-radius: 4px; border-left: 3px solid #f59e0b; text-align: left;">
+                        ⚠️ Any excess points will be forfeited and a 2-month cooldown will automatically apply.
+                    </div>
+                `,
+                background: '#1A2A47', color: '#ffffff',
+                showCancelButton: true, confirmButtonColor: '#f59e0b', cancelButtonColor: '#334155',
+                confirmButtonText: 'Process Redemption',
+                preConfirm: () => {
+                    const reward_id = document.getElementById('reward_select').value;
+                    if (!reward_id) Swal.showValidationMessage('Please select a reward from the list');
+                    return reward_id;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('../api/redeem_manual.php', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ member_id: id, reward_id: result.value })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            Swal.fire({
+                                icon: 'success', title: 'Success!',
+                                text: 'Reward successfully redeemed. Points reset and cooldown applied.',
+                                background: '#1A2A47', color: '#fff'
+                            }).then(() => location.reload());
                         } else {
                             Swal.fire('Error', data.error, 'error');
                         }
