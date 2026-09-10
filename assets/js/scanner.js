@@ -1,5 +1,13 @@
 // assets/js/scanner.js
 
+// HTML Escape Helper - Anti-XSS
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 let html5QrcodeScanner;
 let scannedMemberId = null; 
 
@@ -16,7 +24,7 @@ function onScanSuccess(decodedText, decodedResult) {
         .then(data => {
             if (data.success) {
                 scannedMemberId = data.member.id;
-                document.getElementById('member-name').innerText = `${data.member.first_name} ${data.member.last_name}`;
+                document.getElementById('member-name').textContent = `${data.member.first_name} ${data.member.last_name}`;
                 document.getElementById('member-points').innerText = data.member.point_balance;
                 
                 if (data.member.is_eligible) {
@@ -45,7 +53,7 @@ function onScanSuccess(decodedText, decodedResult) {
                 // RULE 5 & 8: SweetAlert Physical Card Verification
                 Swal.fire({
                     title: 'Verify Membership',
-                    html: `Is the physical VIP Card for <br><strong style="color:#D4AF37; font-size:20px;">${data.member.first_name} ${data.member.last_name}</strong> <br>presented right now?`,
+                    html: `Is the physical VIP Card for <br><strong style="color:#D4AF37; font-size:20px;">${escapeHtml(data.member.first_name)} ${escapeHtml(data.member.last_name)}</strong> <br>presented right now?`,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#D4AF37',
@@ -141,7 +149,7 @@ function addPoint(activityType, pointsAwarded) {
         if (result.isConfirmed) {
             fetch('api/process_point.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                 body: JSON.stringify({
                     member_id: scannedMemberId,
                     activity_type: activityType,
@@ -242,7 +250,7 @@ function submitRedemption() {
             
             fetch('api/process_redemption.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                 body: JSON.stringify({
                     member_id: scannedMemberId,
                     reward_id: rewardId
@@ -305,8 +313,8 @@ function searchMember() {
                     
                     item.innerHTML = `
                         <div>
-                            <strong style="color: #fff;">${member.first_name} ${member.last_name}</strong> ${statusBadge}
-                            <div style="font-size: 12px;">ID: ${member.id} | QR: ${member.qr_code}</div>
+                            <strong style="color: #fff;">${escapeHtml(member.first_name)} ${escapeHtml(member.last_name)}</strong> ${statusBadge}
+                            <div style="font-size: 12px;">ID: ${member.id} | QR: ${escapeHtml(member.qr_code)}</div>
                         </div>
                         <div style="color: #D4AF37; font-weight: bold;">
                             ${member.point_balance} pts

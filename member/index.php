@@ -52,7 +52,8 @@ try {
     }
 
 } catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
+    error_log("Member Dashboard DB Error: " . $e->getMessage());
+    die("System error. Please try again later.");
 }
 ?>
 <!DOCTYPE html>
@@ -61,6 +62,10 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>EL1TE VIP - Dashboard</title>
+
+    <!-- Heto ang Favicon Code (may ../ sa unahan) -->
+    <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
+
     <!-- Ginamit ang bagong dedicated CSS file -->
     <link rel="stylesheet" href="../assets/css/member.css">
 </head>

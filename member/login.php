@@ -1,6 +1,7 @@
 <?php
 // member/login.php
-session_start();
+require_once '../config/database.php';
+if (session_status() === PHP_SESSION_NONE) session_start();
 if (isset($_SESSION['member_id'])) { header("Location: index"); exit(); }
 ?>
 <!DOCTYPE html>
@@ -9,6 +10,10 @@ if (isset($_SESSION['member_id'])) { header("Location: index"); exit(); }
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL1TE VIP - Member Portal</title>
+
+    <!-- Heto ang Favicon Code (may ../ sa unahan) -->
+    <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
+
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
@@ -33,7 +38,7 @@ if (isset($_SESSION['member_id'])) { header("Location: index"); exit(); }
 
             fetch('../api/member_login.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                 body: JSON.stringify({ qr_code, last_name })
             })
             .then(res => res.json())
@@ -43,5 +48,7 @@ if (isset($_SESSION['member_id'])) { header("Location: index"); exit(); }
             });
         });
     </script>
+
+    <script>window.CSRF_TOKEN = '<?= generateCsrfToken() ?>';</script>
 </body>
 </html>

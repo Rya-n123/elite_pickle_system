@@ -43,7 +43,8 @@ try {
     $redemptionLogs = $redemptionsStmt->fetchAll();
 
 } catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
+    error_log("Reports DB Error: " . $e->getMessage());
+    die("System error. Please try again later.");
 }
 ?>
 <!DOCTYPE html>
@@ -52,6 +53,10 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL1TE Pickle Center - Reports</title>
+
+    <!-- Heto ang Favicon Code (may ../ sa unahan) -->
+    <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
@@ -141,27 +146,23 @@ try {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (count($redemptionLogs) > 0): ?>
-                        <?php foreach ($redemptionLogs as $log): 
-                            $cost = (int)$log['points_required'];
-                            $pointsBefore = (int)$log['points_before'];
-                            $excessForfeited = max(0, $pointsBefore - $cost);
-                        ?>
-                            <tr>
-                                <td data-order="<?= $log['redeemed_at'] ?>" data-date="<?= date('Y-m-d', strtotime($log['redeemed_at'])) ?>" style="color: #cbd5e1; font-size: 13px;"><?= date('M d, Y h:i A', strtotime($log['redeemed_at'])) ?></td>
-                                <td style="font-family: monospace; color: #94a3b8;"><?= htmlspecialchars($log['qr_code']) ?></td>
-                                <td><strong><?= htmlspecialchars($log['first_name'] . ' ' . $log['last_name']) ?></strong></td>
-                                <td style="color: #D4AF37; font-weight: bold;"><?= htmlspecialchars($log['reward_name']) ?></td>
-                                <td style="color: #38bdf8; font-weight: bold;"><?= $cost ?> pts</td>
-                                <td style="color: #ff6b6b; font-weight: bold;">
-                                    <?= $excessForfeited > 0 ? '-' . $excessForfeited . ' pts' : '0 pts' ?>
-                                </td>
-                                <td style="font-size: 13px;"><?= htmlspecialchars($log['staff_name']) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr><td colspan="7" style="text-align: center; color: #cbd5e1; padding: 20px;">No redemptions recorded yet.</td></tr>
-                    <?php endif; ?>
+                    <?php foreach ($redemptionLogs as $log): 
+                        $cost = (int)$log['points_required'];
+                        $pointsBefore = (int)$log['points_before'];
+                        $excessForfeited = max(0, $pointsBefore - $cost);
+                    ?>
+                        <tr>
+                            <td data-order="<?= $log['redeemed_at'] ?>" data-date="<?= date('Y-m-d', strtotime($log['redeemed_at'])) ?>" style="color: #cbd5e1; font-size: 13px;"><?= date('M d, Y h:i A', strtotime($log['redeemed_at'])) ?></td>
+                            <td style="font-family: monospace; color: #94a3b8;"><?= htmlspecialchars($log['qr_code']) ?></td>
+                            <td><strong><?= htmlspecialchars($log['first_name'] . ' ' . $log['last_name']) ?></strong></td>
+                            <td style="color: #D4AF37; font-weight: bold;"><?= htmlspecialchars($log['reward_name']) ?></td>
+                            <td style="color: #38bdf8; font-weight: bold;"><?= $cost ?> pts</td>
+                            <td style="color: #ff6b6b; font-weight: bold;">
+                                <?= $excessForfeited > 0 ? '-' . $excessForfeited . ' pts' : '0 pts' ?>
+                            </td>
+                            <td style="font-size: 13px;"><?= htmlspecialchars($log['staff_name']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -182,24 +183,20 @@ try {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (count($pointLogs) > 0): ?>
-                        <?php foreach ($pointLogs as $log): ?>
-                            <tr>
-                                <td data-order="<?= $log['transaction_date'] ?>" data-date="<?= date('Y-m-d', strtotime($log['transaction_date'])) ?>" style="color: #cbd5e1; font-size: 13px;"><?= date('M d, Y h:i A', strtotime($log['transaction_date'])) ?></td>
-                                <td style="font-family: monospace; color: #94a3b8;"><?= htmlspecialchars($log['qr_code']) ?></td>
-                                <td><strong><?= htmlspecialchars($log['first_name'] . ' ' . $log['last_name']) ?></strong></td>
-                                <td>
-                                    <span class="badge" style="background: rgba(212, 175, 55, 0.1); color: #D4AF37; border: 1px solid #D4AF37; display: inline-block; white-space: nowrap;">
-                                        <?= htmlspecialchars($log['activity_type']) ?>
-                                    </span>
-                                </td>
-                                <td style="color: #4ade80; font-weight: bold;">+<?= $log['points_awarded'] ?></td>
-                                <td style="font-size: 13px;"><?= htmlspecialchars($log['staff_name']) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr><td colspan="6" style="text-align: center; color: #cbd5e1; padding: 20px;">No point transactions recorded yet.</td></tr>
-                    <?php endif; ?>
+                    <?php foreach ($pointLogs as $log): ?>
+                        <tr>
+                            <td data-order="<?= $log['transaction_date'] ?>" data-date="<?= date('Y-m-d', strtotime($log['transaction_date'])) ?>" style="color: #cbd5e1; font-size: 13px;"><?= date('M d, Y h:i A', strtotime($log['transaction_date'])) ?></td>
+                            <td style="font-family: monospace; color: #94a3b8;"><?= htmlspecialchars($log['qr_code']) ?></td>
+                            <td><strong><?= htmlspecialchars($log['first_name'] . ' ' . $log['last_name']) ?></strong></td>
+                            <td>
+                                <span class="badge" style="background: rgba(212, 175, 55, 0.1); color: #D4AF37; border: 1px solid #D4AF37; display: inline-block; white-space: nowrap;">
+                                    <?= htmlspecialchars($log['activity_type']) ?>
+                                </span>
+                            </td>
+                            <td style="color: #4ade80; font-weight: bold;">+<?= $log['points_awarded'] ?></td>
+                            <td style="font-size: 13px;"><?= htmlspecialchars($log['staff_name']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -207,8 +204,8 @@ try {
     </div>
 
     <!-- Isiningit ang jQuery at DataTables scripts dito -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Custom DataTables Date Range Search Filter
@@ -243,16 +240,54 @@ try {
             });
         });
 
+        // Setup ng SweetAlert Toast (Maliit na notification sa gilid)
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            background: '#1A2A47',
+            color: '#ffffff',
+            iconColor: '#4ade80'
+        });
+
         // Function para i-trigger ang filter
         function applyDateFilter() {
-            dtTables.draw(); // Nire-redraw nito ang table para gumana yung custom search filter sa taas
+            let min = $('#minDate').val();
+            let max = $('#maxDate').val();
+
+            if (!min && !max) {
+                // Kung pinindot ang Apply pero walang nilagay na petsa
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Please select a date range first.',
+                    iconColor: '#38bdf8'
+                });
+                return;
+            }
+
+            dtTables.draw(); // I-redraw ang table base sa petsa
+
+            // Ipakita ang Success Toast
+            Toast.fire({
+                icon: 'success',
+                title: 'Date filter applied!'
+            });
         }
 
         // Function para i-reset ang filter
         function clearDateFilter() {
             $('#minDate').val('');
             $('#maxDate').val('');
-            dtTables.draw();
+            dtTables.draw(); // I-reset ang table sa lahat ng records
+            
+            // Ipakita ang Reset Toast
+            Toast.fire({
+                icon: 'success',
+                title: 'Filter cleared. Showing all records.',
+                iconColor: '#f59e0b'
+            });
         }
         function toggleMobileMenu() {
             const nav = document.getElementById('navLinks');

@@ -6,6 +6,12 @@ require_once '../config/database.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
 
+// Rate Limiting
+if (!checkRateLimit('member_login_' . $_SERVER['REMOTE_ADDR'])) {
+    echo json_encode(['success' => false, 'error' => 'Too many login attempts. Please try again after 15 minutes.']);
+    exit();
+}
+
 if (isset($data['qr_code']) && isset($data['last_name'])) {
     $qr_code = trim($data['qr_code']);
     $last_name = trim($data['last_name']);
@@ -21,6 +27,7 @@ if (isset($data['qr_code']) && isset($data['last_name'])) {
                 echo json_encode(['success' => false, 'error' => 'Your account is suspended. Please contact staff.']);
                 exit();
             }
+            session_regenerate_id(true);
             $_SESSION['member_id'] = $member['id'];
             $_SESSION['member_name'] = $member['first_name'] . ' ' . $member['last_name'];
             echo json_encode(['success' => true]);

@@ -1,6 +1,7 @@
 <?php
 // scan.php
-session_start();
+require_once 'config/database.php';
+if (session_status() === PHP_SESSION_NONE) session_start();
 
 // I-kick out ang user pabalik sa index kung hindi naka-login
 if (!isset($_SESSION['admin_id'])) {
@@ -14,9 +15,13 @@ if (!isset($_SESSION['admin_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL1TE Pickle Center - Scanner</title>
+
+    <!-- Heto ang Favicon Code -->
+    <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg">
+
     <link rel="stylesheet" href="assets/css/style.css">
     <!-- html5-qrcode library -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+        <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript" crossorigin="anonymous"></script>
     <!-- SweetAlert2 library -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -135,5 +140,6 @@ if (!isset($_SESSION['admin_id'])) {
     </script>
 
     
+<script>window.CSRF_TOKEN = '<?= generateCsrfToken() ?>';</script>
 </body>
 </html>

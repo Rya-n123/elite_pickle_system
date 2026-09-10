@@ -18,7 +18,8 @@ try {
     $rewStmt = $pdo->query("SELECT id, reward_name, points_required FROM rewards WHERE status = 'Available' ORDER BY points_required ASC");
     $availableRewards = $rewStmt->fetchAll();
 } catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
+    error_log("Members Page DB Error: " . $e->getMessage());
+    die("System error. Please try again later.");
 }
 ?>
 <!DOCTYPE html>
@@ -27,6 +28,10 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL1TE Pickle Center - Members</title>
+
+    <!-- Heto ang Favicon Code (may ../ sa unahan) -->
+    <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <!-- Pansinin na may '../' dahil nasa loob tayo ng admin folder -->
     <link rel="stylesheet" href="../assets/css/style.css"> 
@@ -75,50 +80,44 @@ try {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (count($members) > 0): ?>
-                        <?php foreach ($members as $member): ?>
-                            <tr>
-                                <td style="color: #cbd5e1;"><?= htmlspecialchars($member['qr_code']) ?></td>
-                                <td>
-                                    <strong><?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?></strong>
-                                </td>
-                                <td>
-                                    <strong style="color: #D4AF37; font-size: 16px;"><?= $member['point_balance'] ?></strong>
-                                </td>
-                                <td>
-                                    <?php if ($member['status'] === 'Active'): ?>
-                                        <span class="badge badge-active">Active</span>
-                                    <?php else: ?>
-                                        <span class="badge badge-suspended">Suspended</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td style="font-size: 13px; color: #cbd5e1;">
-                                    <?php 
-                                        if (empty($member['next_eligible_date']) || $member['next_eligible_date'] <= date('Y-m-d')) {
-                                            echo '<span style="color: #4ade80;">Eligible Now</span>';
-                                        } else {
-                                            echo date('M d, Y', strtotime($member['next_eligible_date']));
-                                        }
-                                    ?>
-                                </td>
-                                <td>
-                                    <!-- Bagong Redeem Button -->
-                                    <button class="action-btn" style="background-color: #f59e0b; color: #fff; margin-right: 5px;" 
-                                        onclick="openRedeemModal(<?= $member['id'] ?>, '<?= addslashes($member['first_name'] . ' ' . $member['last_name']) ?>', <?= $member['point_balance'] ?>, '<?= empty($member['next_eligible_date']) ? '' : $member['next_eligible_date'] ?>')">
-                                        Redeem
-                                    </button>
-                                    <button class="action-btn btn-edit" onclick="editMember(<?= $member['id'] ?>, '<?= addslashes($member['first_name']) ?>', '<?= addslashes($member['last_name']) ?>', '<?= addslashes($member['qr_code']) ?>')">Edit</button>
-                                    <button class="action-btn btn-toggle" onclick="toggleStatus(<?= $member['id'] ?>, '<?= $member['status'] ?>')">
-                                        <?= $member['status'] === 'Active' ? 'Suspend' : 'Activate' ?>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+                    <?php foreach ($members as $member): ?>
                         <tr>
-                            <td colspan="5" style="text-align: center; color: #cbd5e1; padding: 30px;">No members registered yet.</td>
+                            <td style="color: #cbd5e1;"><?= htmlspecialchars($member['qr_code']) ?></td>
+                            <td>
+                                <strong><?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?></strong>
+                            </td>
+                            <td>
+                                <strong style="color: #D4AF37; font-size: 16px;"><?= $member['point_balance'] ?></strong>
+                            </td>
+                            <td>
+                                <?php if ($member['status'] === 'Active'): ?>
+                                    <span class="badge badge-active">Active</span>
+                                <?php else: ?>
+                                    <span class="badge badge-suspended">Suspended</span>
+                                <?php endif; ?>
+                            </td>
+                            <td style="font-size: 13px; color: #cbd5e1;">
+                                <?php 
+                                    if (empty($member['next_eligible_date']) || $member['next_eligible_date'] <= date('Y-m-d')) {
+                                        echo '<span style="color: #4ade80;">Eligible Now</span>';
+                                    } else {
+                                        echo date('M d, Y', strtotime($member['next_eligible_date']));
+                                    }
+                                ?>
+                            </td>
+                            <td>
+                                <!-- Bagong Redeem Button -->
+                                <button class="action-btn" style="background-color: #f59e0b; color: #fff; margin-right: 5px;" 
+                                    onclick="openRedeemModal(<?= $member['id'] ?>, '<?= jsAttr($member['first_name'] . ' ' . $member['last_name']) ?>', <?= (int)$member['point_balance'] ?>, '<?= jsAttr(empty($member['next_eligible_date']) ? '' : $member['next_eligible_date']) ?>')">
+                                    Redeem
+                                </button>
+                                <button class="action-btn btn-edit" onclick="editMember(<?= $member['id'] ?>, '<?= jsAttr($member['first_name']) ?>', '<?= jsAttr($member['last_name']) ?>', '<?= jsAttr($member['qr_code']) ?>')">Edit</button>
+                                <button class="action-btn btn-toggle" onclick="toggleStatus(<?= $member['id'] ?>, '<?= $member['status'] ?>')">
+                                    <?= $member['status'] === 'Active' ? 'Suspend' : 'Activate' ?>
+                                </button>
+                            </td>
                         </tr>
-                    <?php endif; ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -173,8 +172,8 @@ try {
     </div>
 
     <!-- Isiningit ang jQuery at DataTables scripts dito -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Initialize DataTables
@@ -183,7 +182,8 @@ try {
                 "pageLength": 10,
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 "language": {
-                    "search": "Filter records:"
+                    "search": "Filter records:",
+                    "emptyTable": "No members registered yet."
                 }
             });
         });
@@ -209,7 +209,7 @@ try {
 
             fetch('../api/add_member.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                 body: JSON.stringify({ qr_code, first_name, last_name })
             })
             .then(response => response.json())
@@ -270,7 +270,7 @@ try {
 
             fetch('../api/edit_member.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                 body: JSON.stringify({ id, qr_code, first_name, last_name })
             })
             .then(response => response.json())
@@ -303,7 +303,7 @@ try {
                 if (result.isConfirmed) {
                     fetch('../api/toggle_member.php', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                         body: JSON.stringify({ id: id, current_status: currentStatus })
                     })
                     .then(response => response.json())
@@ -374,7 +374,7 @@ try {
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetch('../api/redeem_manual.php', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                         body: JSON.stringify({ member_id: id, reward_id: result.value })
                     })
                     .then(res => res.json())
@@ -393,5 +393,6 @@ try {
             });
         }
     </script>
+<script>window.CSRF_TOKEN = '<?= generateCsrfToken() ?>';</script>
 </body>
 </html>

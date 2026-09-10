@@ -8,9 +8,19 @@ if (!isset($_SESSION['admin_id'])) {
 }
 
 require_once '../config/database.php';
+
+// CSRF Protection
+$csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+if (!validateCsrfToken($csrfToken)) {
+    echo json_encode(['success' => false, 'error' => 'Invalid security token. Please refresh the page.']);
+    exit();
+}
+
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!empty($data['reward_name']) && !empty($data['points_required']) && !empty($data['status'])) {
+// Validate status against whitelist
+$allowedStatuses = ['Available', 'Out of Stock', 'Hidden'];
+if (!empty($data['reward_name']) && !empty($data['points_required']) && !empty($data['status']) && in_array($data['status'], $allowedStatuses)) {
     try {
         $stmt = $pdo->prepare("INSERT INTO rewards (reward_name, points_required, status) VALUES (:name, :points, :status)");
         $stmt->execute([

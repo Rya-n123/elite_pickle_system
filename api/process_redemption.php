@@ -9,6 +9,14 @@ if (!isset($_SESSION['admin_id'])) {
 }
 
 require_once '../config/database.php';
+
+// CSRF Protection
+$csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+if (!validateCsrfToken($csrfToken)) {
+    echo json_encode(['success' => false, 'error' => 'Invalid security token. Please refresh the page.']);
+    exit();
+}
+
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (isset($data['member_id']) && isset($data['reward_id'])) {

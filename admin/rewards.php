@@ -12,7 +12,8 @@ try {
     $stmt = $pdo->query("SELECT * FROM rewards ORDER BY points_required ASC");
     $rewards = $stmt->fetchAll();
 } catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
+    error_log("Rewards Page DB Error: " . $e->getMessage());
+    die("System error. Please try again later.");
 }
 ?>
 <!DOCTYPE html>
@@ -21,6 +22,10 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL1TE Pickle Center - Rewards</title>
+
+    <!-- Heto ang Favicon Code (may ../ sa unahan) -->
+    <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
@@ -80,7 +85,7 @@ try {
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <button class="action-btn btn-edit" onclick="editReward(<?= $reward['id'] ?>, '<?= addslashes($reward['reward_name']) ?>', <?= $reward['points_required'] ?>, '<?= $reward['status'] ?>')">Edit</button>
+                                <button class="action-btn btn-edit" onclick="editReward(<?= $reward['id'] ?>, '<?= jsAttr($reward['reward_name']) ?>', <?= (int)$reward['points_required'] ?>, '<?= jsAttr($reward['status']) ?>')">Edit</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -144,8 +149,8 @@ try {
     </div>
 
     <!-- Isiningit ang jQuery at DataTables scripts dito -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Initialize DataTables
@@ -154,7 +159,8 @@ try {
                 "pageLength": 10,
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 "language": {
-                    "search": "Filter records:"
+                    "search": "Filter records:",
+                    "emptyTable": "No rewards added to inventory yet." // Pwede mong idagdag ito para parehas ng style!
                 }
             });
         });
@@ -197,7 +203,7 @@ try {
 
             fetch('../api/add_reward.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                 body: JSON.stringify({ reward_name, points_required, status })
             })
             .then(response => response.json())
@@ -236,7 +242,7 @@ try {
 
             fetch('../api/edit_reward.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                 body: JSON.stringify({ id, reward_name, points_required, status })
             })
             .then(response => response.json())
@@ -249,5 +255,6 @@ try {
             });
         });
     </script>
+<script>window.CSRF_TOKEN = '<?= generateCsrfToken() ?>';</script>
 </body>
 </html>

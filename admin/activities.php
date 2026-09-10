@@ -8,7 +8,8 @@ try {
     $stmt = $pdo->query("SELECT * FROM activities ORDER BY id ASC");
     $activities = $stmt->fetchAll();
 } catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
+    error_log("Activities Page DB Error: " . $e->getMessage());
+    die("System error. Please try again later.");
 }
 ?>
 <!DOCTYPE html>
@@ -17,6 +18,10 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL1TE Pickle Center - Activities</title>
+
+    <!-- Heto ang Favicon Code (may ../ sa unahan) -->
+    <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
@@ -78,7 +83,7 @@ try {
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <button class="action-btn btn-edit" onclick="editActivity(<?= $act['id'] ?>, '<?= addslashes($act['activity_name']) ?>', <?= $act['points_awarded'] ?>, <?= $act['has_daily_limit'] ?>)">Edit</button>
+                                <button class="action-btn btn-edit" onclick="editActivity(<?= $act['id'] ?>, '<?= jsAttr($act['activity_name']) ?>', <?= (int)$act['points_awarded'] ?>, <?= (int)$act['has_daily_limit'] ?>)">Edit</button>
                                 <button class="action-btn btn-toggle" onclick="toggleActivityStatus(<?= $act['id'] ?>, '<?= $act['status'] ?>')">
                                     <?= $act['status'] === 'Active' ? 'Disable' : 'Enable' ?>
                                 </button>
@@ -143,8 +148,8 @@ try {
     </div>
 
     <!-- Isiningit ang jQuery at DataTables scripts dito -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Initialize DataTables
@@ -177,7 +182,7 @@ try {
         document.getElementById('addActivityForm').addEventListener('submit', function(e) {
             e.preventDefault();
             fetch('../api/add_activity.php', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                 body: JSON.stringify({
                     name: document.getElementById('add_activity_name').value.trim(),
                     points: document.getElementById('add_points').value,
@@ -201,7 +206,7 @@ try {
         document.getElementById('editActivityForm').addEventListener('submit', function(e) {
             e.preventDefault();
             fetch('../api/edit_activity.php', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                 body: JSON.stringify({
                     id: document.getElementById('edit_id').value,
                     name: document.getElementById('edit_activity_name').value.trim(),
@@ -222,7 +227,7 @@ try {
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetch('../api/toggle_activity.php', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': window.CSRF_TOKEN },
                         body: JSON.stringify({ id: id, current_status: currentStatus })
                     }).then(r => r.json()).then(data => {
                         if (data.success) location.reload();
@@ -231,5 +236,6 @@ try {
             });
         }
     </script>
+<script>window.CSRF_TOKEN = '<?= generateCsrfToken() ?>';</script>
 </body>
 </html>

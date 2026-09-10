@@ -33,7 +33,8 @@ try {
     $recentActivities = $recentActivityStmt->fetchAll();
 
 } catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
+    error_log("Dashboard DB Error: " . $e->getMessage());
+    die("System error. Please try again later.");
 }
 ?>
 <!DOCTYPE html>
@@ -42,6 +43,10 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL1TE Pickle Center - Dashboard</title>
+
+    <!-- Heto ang Favicon Code (may ../ sa unahan) -->
+    <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
+
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body style="align-items: flex-start; padding-top: 80px;"> 

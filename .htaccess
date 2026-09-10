@@ -1,11 +1,62 @@
 RewriteEngine On
 
-# 1. Itago ang .php extension
+# ============================================
+# SECURITY HEADERS (para pumasa sa securityheaders.com)
+# ============================================
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(self)"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net https://code.jquery.com https://cdn.datatables.net; style-src 'self' 'unsafe-inline' https://cdn.datatables.net; img-src 'self' data: blob:; connect-src 'self'; font-src 'self'; media-src 'self' blob:; frame-ancestors 'self';"
+</IfModule>
+
+# ============================================
+# FORCE HTTPS (Hostinger Production)
+# ============================================
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ============================================
+# BLOCK SENSITIVE FILES & DIRECTORIES
+# ============================================
+# Block .git directory
+RewriteRule ^\.git - [F,L]
+
+# Block .env files
+RewriteRule ^\.env - [F,L]
+
+# Block config directory from direct access
+RewriteRule ^config/ - [F,L]
+
+# Block includes directory from direct access
+RewriteRule ^includes/ - [F,L]
+
+# ============================================
+# DISABLE DIRECTORY LISTING
+# ============================================
+Options -Indexes
+
+# ============================================
+# BLOCK ACCESS TO SENSITIVE FILE TYPES
+# ============================================
+<FilesMatch "\.(sql|log|ini|sh|bak|config|dist|fla|inc|psd|swp)$">
+    Require all denied
+</FilesMatch>
+
+# ============================================
+# CLEAN URLs - Itago ang .php extension
+# ============================================
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*)$ $1.php [L]
 
-# 2. (Optional) Force HTTPS kapag nasa Hostinger na
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# ============================================
+# CUSTOM ERROR PAGES
+# ============================================
+ErrorDocument 403 "Access Denied"
+ErrorDocument 404 "Page Not Found"
+ErrorDocument 500 "Server Error"
