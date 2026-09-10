@@ -631,3 +631,71 @@ table.dataTable.no-footer {
         grid-template-columns: 1fr; /* Magiging patong-patong sa mobile */
     }
 }
+
+/* =========================================
+   SPLIT SCREEN LOGIN STYLES 
+   ========================================= */
+.split-login-wrapper {
+    display: flex;
+    width: 90%;
+    max-width: 1000px;
+    background-color: #1A2A47;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    overflow: hidden; /* Para pumantay ang image sa rounded corners */
+    min-height: 550px;
+}
+
+/* KALIWANG SIDE: Branding & Image */
+.split-image {
+    flex: 1.2; /* Mas malapad ng konti ang image part */
+    /* Maganda kung maglalagay ka ng background image ng pickleball court niyo rito */
+    background: linear-gradient(to right, rgba(17, 28, 48, 0.6), rgba(26, 42, 71, 0.9)), url('../images/login-bg.jpg') center/cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: #fff;
+    text-align: center;
+    border-right: 3px solid #D4AF37;
+}
+
+.split-image h1 {
+    color: #D4AF37;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.split-image p {
+    color: #cbd5e1;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* KANANG SIDE: Login Form */
+.split-form {
+    flex: 1;
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #1A2A47;
+}
+
+/* MOBILE RESPONSIVENESS (Babalik sa 1-column kapag cellphone) */
+@media (max-width: 768px) {
+    .split-login-wrapper {
+        flex-direction: column;
+    }
+    .split-image {
+        flex: none;
+        padding: 40px 20px;
+        border-right: none;
+        border-bottom: 3px solid #D4AF37;
+        min-height: 250px;
+    }
+    .split-form {
+        padding: 40px 25px;
+    }
+}

@@ -86,31 +86,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
 
-    <div class="login-container">
-        <img src="assets/images/logo.jpg" alt="EL1TE Pickle Center Logo" class="login-logo">
+    <div class="split-login-wrapper">
         
-        <h2>EL1TE Portal</h2>
-        <p style="text-align: center; color: #cbd5e1; margin-bottom: 20px; font-size: 14px;">Staff Login & VIP Access</p>
+        <!-- KALIWANG SIDE: Branding (Mukhang para sa Players) -->
+        <div class="split-image">
+            <img src="assets/images/logo.jpg" alt="EL1TE Logo" style="width: 130px; border-radius: 50%; border: 3px solid #D4AF37; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+            <h1>EL1TE VIP Club</h1>
+            <p>Welcome to your exclusive portal. Track your match points, view your rank, and redeem premium Pickleball rewards.</p>
+        </div>
 
-        <?php if (!empty($error)): ?>
-            <div class="error-msg"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
+        <!-- KANANG SIDE: Form (Dual-purpose labels) -->
+        <div class="split-form">
+            <h2 style="color: #D4AF37; margin-bottom: 5px; text-align: center;">Member Access</h2>
+            <p style="text-align: center; color: #cbd5e1; margin-bottom: 25px; font-size: 14px;">Enter your account details to continue</p>
 
-        <!-- Ginamit ang "index" lang para sa Clean URLs via .htaccess -->
-        <form action="index" method="POST">
-            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
-            <div class="input-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required autocomplete="off">
-            </div>
+            <?php if (!empty($error)): ?>
+                <div class="error-msg"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
 
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
+            <form action="index" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
+                
+                <div class="input-group">
+                    <!-- Ang staff ay magta-type ng username, ang player ay magta-type ng Last Name -->
+                    <label for="username">Username / Last Name</label>
+                    <input type="text" id="username" name="username" placeholder="Enter Username or Last Name" required autocomplete="off">
+                </div>
 
-            <button type="submit" class="btn-gold">Access Portal</button>
-        </form>
+                <div class="input-group">
+                    <!-- Ang staff ay magta-type ng password, ang player ay magta-type ng QR Code No. -->
+                    <label for="password">Password / VIP Card No.</label>
+                    <input type="password" id="password" name="password" placeholder="Enter Password or VIP Card" required>
+                </div>
+
+                <button type="submit" class="btn-gold" style="margin-top: 15px;">Access My Account</button>
+            </form>
+        </div>
+
     </div>
 
 </body>

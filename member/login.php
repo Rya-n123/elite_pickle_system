@@ -16,17 +16,37 @@ if (isset($_SESSION['member_id'])) { header("Location: index"); exit(); }
 
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-    <div class="login-container" style="text-align: center; max-width: 400px; width: 90%;">
-        <img src="../assets/images/logo.jpg" alt="Logo" style="width: 100px; border-radius: 50%; margin-bottom: 20px; border: 2px solid #D4AF37;">
-        <h2 style="color: #D4AF37; margin-bottom: 5px;">VIP Portal</h2>
-        <p style="color: #cbd5e1; margin-bottom: 25px; font-size: 14px;">Log in to check your points and rewards</p>
+<body>
+
+    <div class="split-login-wrapper">
         
-        <form id="memberLoginForm">
-            <input type="text" id="qr_code" placeholder="VIP Card Number (e.g. ELITE-10001)" required style="width: 100%; padding: 12px; margin-bottom: 15px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 6px;">
-            <input type="password" id="last_name" placeholder="Last Name" required style="width: 100%; padding: 12px; margin-bottom: 20px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 6px;">
-            <button type="submit" class="btn-gold" style="width: 100%;">Access My Account</button>
-        </form>
+        <!-- KALIWANG SIDE: Branding -->
+        <div class="split-image">
+            <img src="../assets/images/logo.jpg" alt="EL1TE Logo" style="width: 130px; border-radius: 50%; border: 3px solid #D4AF37; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+            <h1>VIP Loyalty Club</h1>
+            <p>Your exclusive access to premium rewards, match points, and special EL1TE Pickleball privileges.</p>
+        </div>
+
+        <!-- KANANG SIDE: Form -->
+        <div class="split-form">
+            <h2 style="color: #D4AF37; margin-bottom: 5px; text-align: center;">Member Portal</h2>
+            <p style="text-align: center; color: #cbd5e1; margin-bottom: 25px; font-size: 14px;">Log in to check your points and rewards</p>
+            
+            <form id="memberLoginForm">
+                <div class="input-group">
+                    <label for="qr_code">VIP Card Number</label>
+                    <input type="text" id="qr_code" placeholder="e.g. EPC-2026-001" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="password" id="last_name" placeholder="Enter your last name" required>
+                </div>
+
+                <button type="submit" class="btn-gold" style="margin-top: 15px;">Access My Account</button>
+            </form>
+        </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -42,6 +42,9 @@ try {
     // Initialize PDO connection
     $pdo = new PDO($dsn, $username, $password, $options);
 
+    // I-sync ang MySQL timezone sa Philippine Time (+08:00) para tugma sa scanner
+    $pdo->exec("SET time_zone = '+08:00'");
+
 } catch (PDOException $e) {
     // I-log ang error nang hindi ipinapakita ang sensitibong database info sa user
     error_log("Database Connection Failed: " . $e->getMessage());
