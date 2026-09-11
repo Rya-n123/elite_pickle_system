@@ -4,7 +4,10 @@ session_start();
 if (!isset($_SESSION['admin_id'])) { header("Location: ../index"); exit(); }
 require_once '../config/database.php';
 
+date_default_timezone_set('Asia/Manila');
 $today = date('Y-m-d');
+$hour = date('H');
+$greeting = ($hour < 12) ? "Good morning" : (($hour < 18) ? "Good afternoon" : "Good evening");
 
 try {
     // 1. Kumuha ng Quick KPIs para sa araw na ito
@@ -22,13 +25,33 @@ try {
     ");
     $topMembers = $topMembersStmt->fetchAll();
 
-    // 3. Kumuha ng 5 Most Recent Transactions (Points Added)
+    // 3. Kumuha ng 5 Most Recent Transactions (Pinagsamang Points Added at Redeemed)
     $recentActivityStmt = $pdo->query("
-        SELECT pt.activity_type, pt.points_awarded, pt.transaction_date, m.first_name, m.last_name 
+        SELECT 
+            pt.activity_type AS activity, 
+            pt.points_awarded AS points, 
+            pt.transaction_date AS transaction_date, 
+            m.first_name, 
+            m.last_name,
+            'earned' AS trans_type
         FROM point_transactions pt
         JOIN members m ON pt.member_id = m.id
-        ORDER BY pt.transaction_date DESC 
-        LIMIT 5
+        
+        UNION ALL
+        
+        SELECT 
+            CONCAT('Redeemed: ', r.reward_name) AS activity, 
+            rh.points_before AS points, 
+            rh.redeemed_at AS transaction_date, 
+            m.first_name, 
+            m.last_name,
+            'redeemed' AS trans_type
+        FROM redemption_history rh
+        JOIN members m ON rh.member_id = m.id
+        JOIN rewards r ON rh.reward_id = r.id
+        
+        ORDER BY transaction_date DESC 
+        LIMIT 6
     ");
     $recentActivities = $recentActivityStmt->fetchAll();
 
@@ -47,6 +70,9 @@ try {
     <!-- Heto ang Favicon Code (may ../ sa unahan) -->
     <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
 
+    <!-- FontAwesome Icons for Premium Look -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body style="align-items: flex-start; padding-top: 80px;"> 
@@ -75,20 +101,20 @@ try {
     </header>
 
     <div class="main-container">
-        <h2 style="color: #fff; margin-bottom: 20px;">Welcome back, <?= htmlspecialchars($_SESSION['full_name'] ?? 'Admin') ?>!</h2>
+        <h2 style="color: #fff; margin-bottom: 20px;"><?= $greeting ?>, <?= htmlspecialchars($_SESSION['full_name'] ?? 'Admin') ?>! 👋</h2>
 
         <!-- KPI Cards -->
         <div class="kpi-grid">
             <div class="kpi-card" style="border-top-color: #3b82f6;">
-                <h4>Total Active VIPs</h4>
+                <h4><i class="fa-solid fa-crown" style="margin-right: 8px;"></i> Total Active VIPs</h4>
                 <div class="kpi-value" style="color: #3b82f6;"><?= $kpiMembers ?></div>
             </div>
             <div class="kpi-card" style="border-top-color: #4ade80;">
-                <h4>Points Issued Today</h4>
+                <h4><i class="fa-solid fa-bolt" style="margin-right: 8px;"></i> Points Issued Today</h4>
                 <div class="kpi-value" style="color: #4ade80;">+<?= $kpiPointsToday ?></div>
             </div>
             <div class="kpi-card" style="border-top-color: #f59e0b;">
-                <h4>Rewards Claimed Today</h4>
+                <h4><i class="fa-solid fa-gift" style="margin-right: 8px;"></i> Rewards Claimed Today</h4>
                 <div class="kpi-value" style="color: #f59e0b;"><?= $kpiRedeemsToday ?></div>
             </div>
         </div>
@@ -114,9 +140,22 @@ try {
                             <?php foreach ($recentActivities as $act): ?>
                                 <tr>
                                     <td><strong><?= htmlspecialchars($act['first_name'] . ' ' . $act['last_name']) ?></strong></td>
-                                    <td style="font-size: 13px; color: #cbd5e1;"><?= htmlspecialchars($act['activity_type']) ?></td>
-                                    <td style="color: #4ade80; font-weight: bold;">+<?= $act['points_awarded'] ?></td>
-                                    <td style="font-size: 12px; color: #94a3b8;"><?= date('h:i A', strtotime($act['transaction_date'])) ?></td>
+                                    <td style="font-size: 13px; color: #cbd5e1;">
+                                        <?php if ($act['trans_type'] === 'redeemed'): ?>
+                                            <i class="fa-solid fa-gift" style="color: #f59e0b; margin-right: 5px;"></i>
+                                        <?php endif; ?>
+                                        <?= htmlspecialchars($act['activity']) ?>
+                                    </td>
+                                    
+                                    <!-- Dynamic Color para sa Points -->
+                                    <?php if ($act['trans_type'] === 'earned'): ?>
+                                        <td style="color: #4ade80; font-weight: bold;">+<?= $act['points'] ?></td>
+                                    <?php else: ?>
+                                        <td style="color: #ff6b6b; font-weight: bold;">-<?= $act['points'] ?></td>
+                                    <?php endif; ?>
+                                    
+                                    <!-- Pinalitan ko ang date format para makita rin ang Araw/Buwan -->
+                                    <td style="font-size: 12px; color: #94a3b8;"><?= date('M d, h:i A', strtotime($act['transaction_date'])) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -135,9 +174,10 @@ try {
                             <li class="rank-<?= $rank ?>">
                                 <div style="display: flex; gap: 15px; align-items: center;">
                                     <div class="rank-badge"><?= $rank ?></div>
-                                    <div style="color: #fff; font-weight: bold;">
-                                        <?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?>
-                                    </div>
+                                    <a href="members" class="leaderboard-name" style="color: #fff; font-weight: bold; text-decoration: none; transition: color 0.3s;">
+                                    <?= htmlspecialchars($member['first_name'] . ' ' . $member['last_name']) ?> 
+                                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px; margin-left: 5px; color: #64748b; transition: color 0.3s;"></i>
+                                </a>
                                 </div>
                                 <div style="color: #D4AF37; font-weight: bold; font-size: 18px;">
                                     <?= $member['point_balance'] ?> pts

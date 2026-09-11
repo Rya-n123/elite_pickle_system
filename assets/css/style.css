@@ -393,8 +393,22 @@ table tr:hover {
 .btn-edit { background-color: #3b82f6; color: #fff; }
 .btn-edit:hover { background-color: #2563eb; }
 
-.btn-toggle { background-color: #f59e0b; color: #fff; }
-.btn-toggle:hover { background-color: #d97706; }
+/* Dynamic Toggle Buttons */
+.btn-suspend { 
+    background-color: #ff6b6b; /* Red para sa Suspend */
+    color: #fff; 
+}
+.btn-suspend:hover { 
+    background-color: #ef4444; 
+}
+
+.btn-activate { 
+    background-color: #4ade80; /* Green para sa Activate */
+    color: #0f172a; /* Dark blue text para mas madaling basahin sa green */
+}
+.btn-activate:hover { 
+    background-color: #22c55e; 
+}
 
 .modal-content form {
     display: flex;
@@ -698,4 +712,49 @@ table.dataTable.no-footer {
     .split-form {
         padding: 40px 25px;
     }
+}
+
+/* =========================================
+   ACTION BUTTONS ALIGNMENT FIX (TABLES)
+   ========================================= */
+.action-row {
+    display: flex;
+    gap: 8px; /* Espasyo sa pagitan ng mga buttons */
+    align-items: center;
+    flex-wrap: nowrap; /* Pipigil sa pagbaba ng buttons */
+}
+
+.action-row .action-btn {
+    margin: 0; /* Tinanggal ang lumang margin */
+    white-space: nowrap; /* Bawal maputol ang text sa loob ng button */
+}
+
+/* =========================================
+   UI/UX UPGRADES (ANIMATIONS & HOVERS)
+   ========================================= */
+/* Fade-in Animation pagka-login */
+.main-container {
+    animation: fadeIn 0.8s ease-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 3D Float Effect sa KPI Cards */
+.kpi-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
+}
+.kpi-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+}
+
+/* Clickable Leaderboard Names */
+.leaderboard-name:hover {
+    color: #D4AF37 !important;
+}
+.leaderboard-name:hover i {
+    color: #D4AF37 !important;
 }

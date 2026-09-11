@@ -106,15 +106,16 @@ try {
                                 ?>
                             </td>
                             <td>
-                                <!-- Bagong Redeem Button -->
-                                <button class="action-btn" style="background-color: #f59e0b; color: #fff; margin-right: 5px;" 
-                                    onclick="openRedeemModal(<?= $member['id'] ?>, '<?= jsAttr($member['first_name'] . ' ' . $member['last_name']) ?>', <?= (int)$member['point_balance'] ?>, '<?= jsAttr(empty($member['next_eligible_date']) ? '' : $member['next_eligible_date']) ?>')">
-                                    Redeem
-                                </button>
-                                <button class="action-btn btn-edit" onclick="editMember(<?= $member['id'] ?>, '<?= jsAttr($member['first_name']) ?>', '<?= jsAttr($member['last_name']) ?>', '<?= jsAttr($member['qr_code']) ?>')">Edit</button>
-                                <button class="action-btn btn-toggle" onclick="toggleStatus(<?= $member['id'] ?>, '<?= $member['status'] ?>')">
-                                    <?= $member['status'] === 'Active' ? 'Suspend' : 'Activate' ?>
-                                </button>
+                                <div class="action-row">
+                                    <button class="action-btn" style="background-color: #f59e0b; color: #fff;" 
+                                        onclick="openRedeemModal(<?= $member['id'] ?>, '<?= jsAttr($member['first_name'] . ' ' . $member['last_name']) ?>', <?= (int)$member['point_balance'] ?>, '<?= jsAttr(empty($member['next_eligible_date']) ? '' : $member['next_eligible_date']) ?>')">
+                                        Redeem
+                                    </button>
+                                    <button class="action-btn btn-edit" onclick="editMember(<?= $member['id'] ?>, '<?= jsAttr($member['first_name']) ?>', '<?= jsAttr($member['last_name']) ?>', '<?= jsAttr($member['qr_code']) ?>')">Edit</button>
+                                    <button class="action-btn <?= $member['status'] === 'Active' ? 'btn-suspend' : 'btn-activate' ?>" onclick="toggleStatus(<?= $member['id'] ?>, '<?= $member['status'] ?>')">
+    <?= $member['status'] === 'Active' ? 'Suspend' : 'Activate' ?>
+</button>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
