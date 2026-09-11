@@ -63,125 +63,152 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>EL1TE VIP - Dashboard</title>
 
-    <!-- Heto ang Favicon Code (may ../ sa unahan) -->
     <link rel="icon" type="image/jpeg" href="../assets/images/logo.jpg">
-
-    <!-- Ginamit ang bagong dedicated CSS file -->
-    <link rel="stylesheet" href="../assets/css/member.css">
+    
+    <!-- Google Fonts, FontAwesome & Tailwind CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { gold: '#D4AF37' } } }
+      }
+    </script>
+    <style>
+        /* Smooth animation para sa Progress Bar */
+        #progressBar { transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
 </head>
-<body> 
+<body class="bg-slate-900 text-slate-100 font-sans pb-10"> 
 
-    <header class="portal-header">
-        <img src="../assets/images/logo.jpg" alt="Logo">
-        <h3>Hello, <?= htmlspecialchars($_SESSION['member_name']) ?>!</h3>
-        <div style="display: block; justify-content: center; gap: 15px; margin-top: 8px;">
-            <a href="#" onclick="openProfileModal(event)" style="color: #cbd5e1; font-size: 13px; text-decoration: none; font-weight: 600;">👤 My Profile</a>
-            <span style="color: #334155;">|</span>
-            <a href="logout" class="btn-logout">Log out</a>
+    <!-- Header -->
+    <header class="bg-slate-900/90 backdrop-blur-md border-b border-gold/30 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-md mx-auto px-5 py-4 flex flex-col items-center text-center">
+            <img src="../assets/images/logo.jpg" alt="Logo" class="w-12 h-12 rounded-full border-2 border-gold shadow-md mb-2 object-cover">
+            <h3 class="text-xl font-bold text-white mb-2">Hello, <span class="text-gold"><?= htmlspecialchars($_SESSION['member_name']) ?></span>!</h3>
+            <div class="flex items-center justify-center gap-4 text-sm font-medium">
+                <a href="#" onclick="openProfileModal(event)" class="text-slate-300 hover:text-gold transition-colors"><i class="fa-solid fa-user text-xs mr-1"></i> My Profile</a>
+                <span class="text-slate-600">|</span>
+                <a href="logout" class="text-red-400 hover:text-red-300 transition-colors"><i class="fa-solid fa-power-off text-xs mr-1"></i> Log out</a>
+            </div>
         </div>
     </header>
 
-    <div class="member-container">
+    <div class="max-w-md mx-auto px-5 mt-6">
         
-        <div class="warning-banner">
-            <strong>⚠️ Physical VIP Card Required</strong>
-            <span>Digital copies or screenshots will NOT be accepted. Please present your actual physical VIP card at the front desk to earn or redeem points.</span>
+        <!-- Warning Banner -->
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-6 flex flex-col gap-1">
+            <strong class="text-amber-400 text-sm flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Physical VIP Card Required</strong>
+            <span class="text-slate-400 text-[13px] leading-relaxed">Digital copies or screenshots will NOT be accepted. Please present your physical VIP card at the front desk.</span>
         </div>
 
         <!-- Premium VIP Point Card -->
-        <div class="vip-card">
-            <div class="label">Current Balance</div>
-            <!-- Nilagyan natin ng id="pointCounter" at data-target -->
-            <div class="points" id="pointCounter" data-target="<?= $member['point_balance'] ?>">0</div>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 border-t-4 border-gold rounded-2xl p-6 shadow-2xl mb-8 relative overflow-hidden">
+            <!-- Background Watermark -->
+            <i class="fa-solid fa-medal absolute -right-4 -bottom-6 text-9xl text-slate-700/20"></i>
             
-            <div class="status">
-                <?php 
-                    if (empty($member['next_eligible_date']) || $member['next_eligible_date'] <= date('Y-m-d')) {
-                        echo '<span style="color: #4ade80;">✅ You are eligible to redeem a reward!</span>';
-                    } else {
-                        echo '<span style="color:#f87171;">⏳ Next redemption on: ' . date('M d, Y', strtotime($member['next_eligible_date'])) . '</span>';
-                    }
-                ?>
-            </div>
+            <div class="relative z-10">
+                <div class="text-slate-400 text-xs uppercase tracking-widest font-semibold mb-2">Current Balance</div>
+                <div class="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-md" id="pointCounter" data-target="<?= $member['point_balance'] ?>">0</div>
+                
+                <div class="text-xs md:text-sm font-medium mb-6 bg-slate-900/70 inline-block px-3 py-2 rounded-lg border border-slate-700">
+                    <?php 
+                        if (empty($member['next_eligible_date']) || $member['next_eligible_date'] <= date('Y-m-d')) {
+                            echo '<span class="text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i> Eligible to redeem!</span>';
+                        } else {
+                            echo '<span class="text-red-400"><i class="fa-solid fa-clock mr-1"></i> Next redemption: ' . date('M d, Y', strtotime($member['next_eligible_date'])) . '</span>';
+                        }
+                    ?>
+                </div>
 
-            <!-- Bagong Progress Bar Section -->
-            <div class="progress-container">
-                <div class="progress-text"><?= $progress_msg ?></div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progressBar" data-width="<?= $progress_percentage ?>%"></div>
+                <!-- Progress Bar Section -->
+                <div class="w-full">
+                    <div class="text-xs text-slate-300 mb-2 font-medium" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                        <?= $progress_msg ?>
+                    </div>
+                    <div class="h-3 w-full bg-slate-900 rounded-full overflow-hidden border border-slate-700 shadow-inner">
+                        <div class="h-full bg-gradient-to-r from-yellow-600 via-gold to-yellow-300 w-0 relative" id="progressBar" data-width="<?= $progress_percentage ?>%">
+                            <!-- Kintab effect sa loob ng progress bar -->
+                            <div class="absolute top-0 left-0 w-full h-full bg-white/20"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <h3 class="section-title">Rewards Catalog</h3>
-        <div>
+        <!-- Rewards Catalog -->
+        <h3 class="text-lg font-bold text-gold mb-4 flex items-center gap-2"><i class="fa-solid fa-gift"></i> Rewards Catalog</h3>
+        <div class="flex flex-col gap-3 mb-8">
             <?php foreach ($rewards as $rew): ?>
                 <?php $is_affordable = $member['point_balance'] >= $rew['points_required']; ?>
-                <div class="reward-card">
-                    <span class="reward-name"><?= htmlspecialchars($rew['reward_name']) ?></span>
-                    <span class="reward-points" style="color: <?= $is_affordable ? '#4ade80' : '#94a3b8' ?>;">
+                <div class="flex justify-between items-center bg-slate-800/60 border border-slate-700 rounded-xl p-4 hover:border-gold/30 transition-colors">
+                    <span class="text-slate-200 font-medium text-sm"><?= htmlspecialchars($rew['reward_name']) ?></span>
+                    <span class="font-bold text-sm <?= $is_affordable ? 'text-emerald-400' : 'text-slate-500' ?>">
                         <?= $rew['points_required'] ?> pts
                     </span>
                 </div>
             <?php endforeach; ?>
         </div>
 
-        <h3 class="section-title">Recent Activity</h3>
-        <table class="activity-list">
-            <?php if(count($transactions) > 0): ?>
-                <?php foreach($transactions as $trx): ?>
-                    <tr>
-                        <td>
-                            <span class="activity-title"><?= htmlspecialchars($trx['activity_type']) ?></span>
-                            <span class="activity-date"><?= date('M d, Y • h:i A', strtotime($trx['transaction_date'])) ?></span>
-                        </td>
-                        <td>+<?= $trx['points_awarded'] ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="2" style="text-align: center; color: #64748b; font-size: 13px;">No activities recorded yet.</td>
-                </tr>
-            <?php endif; ?>
-        </table>
-
-    </div>
-
-    <!-- My Profile Modal -->
-    <div id="profileModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;">
-        <div class="modal-content" style="background: #1e293b; padding: 30px 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transform: translateY(20px); transition: transform 0.3s;">
-            
-            <div style="width: 60px; height: 60px; background: rgba(212, 175, 55, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border: 2px solid #D4AF37;">
-                <span style="font-size: 24px;">👤</span>
-            </div>
-            
-            <h3 style="color: #f8fafc; margin: 0 0 5px; font-size: 20px;"><?= htmlspecialchars($_SESSION['member_name']) ?></h3>
-            <p style="color: #4ade80; margin: 0 0 20px; font-size: 13px; font-weight: 600;">● <?= $member['status'] ?> Member</p>
-
-            <div style="background: #0f172a; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #334155; text-align: left;">
-                <div style="margin-bottom: 10px;">
-                    <span style="display: block; color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">VIP Card Number</span>
-                    <?php 
-                        // Masking the QR Code for security (e.g., ELITE-****12)
-                        $qr = $member['qr_code'];
-                        $masked_qr = substr($qr, 0, 6) . '****' . substr($qr, -2);
-                    ?>
-                    <strong style="color: #f8fafc; font-size: 15px; font-family: monospace;"><?= $masked_qr ?></strong>
-                </div>
-            </div>
-
-            <button onclick="closeProfileModal()" style="background: #D4AF37; color: #0f172a; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer;">Close</button>
+        <!-- Recent Activity -->
+        <h3 class="text-lg font-bold text-gold mb-4 flex items-center gap-2"><i class="fa-solid fa-list-check"></i> Recent Activity</h3>
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+            <table class="w-full text-sm text-left">
+                <tbody class="divide-y divide-slate-700/50">
+                    <?php if(count($transactions) > 0): ?>
+                        <?php foreach($transactions as $trx): ?>
+                            <tr class="hover:bg-slate-700/30 transition-colors">
+                                <td class="p-4">
+                                    <div class="font-medium text-slate-200 mb-0.5"><?= htmlspecialchars($trx['activity_type']) ?></div>
+                                    <div class="text-xs text-slate-500"><?= date('M d, Y • h:i A', strtotime($trx['transaction_date'])) ?></div>
+                                </td>
+                                <td class="p-4 text-right font-bold text-emerald-400">+<?= $trx['points_awarded'] ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="2" class="p-6 text-center text-slate-500 text-sm">No activities recorded yet.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    
+    <!-- My Profile Modal -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[1000] flex items-center justify-center opacity-0 transition-opacity duration-300 px-4">
+        <div id="profileContent" class="bg-slate-800 border border-gold/40 rounded-2xl p-6 w-full max-w-sm text-center shadow-[0_15px_40px_rgba(0,0,0,0.6)] transform translate-y-5 transition-transform duration-300">
+            
+            <div class="w-16 h-16 mx-auto bg-gold/10 border-2 border-gold rounded-full flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                <i class="fa-solid fa-user-astronaut text-2xl text-gold"></i>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mb-1"><?= htmlspecialchars($_SESSION['member_name']) ?></h3>
+            <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-6"><i class="fa-solid fa-circle text-[8px] align-middle mr-1 drop-shadow-md"></i> <?= $member['status'] ?> Member</p>
+
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 text-left mb-6 relative overflow-hidden">
+                <!-- Barcode styling decoration -->
+                <i class="fa-solid fa-barcode absolute right-[-20px] top-2 text-6xl text-slate-800"></i>
+                <span class="block text-slate-500 text-[10px] uppercase tracking-wider mb-1 relative z-10">VIP Card Number</span>
+                <?php 
+                    $qr = $member['qr_code'];
+                    $masked_qr = substr($qr, 0, 6) . '****' . substr($qr, -2);
+                ?>
+                <strong class="text-white font-mono text-lg tracking-widest relative z-10"><?= $masked_qr ?></strong>
+            </div>
+
+            <button onclick="closeProfileModal()" class="w-full bg-gold hover:bg-yellow-500 text-slate-900 font-bold py-3 rounded-xl shadow-lg transition-all active:scale-95">Close Profile</button>
+        </div>
+    </div>
+
 <script>
         // Gamified Number Counter Animation
         document.addEventListener("DOMContentLoaded", () => {
             const counter = document.getElementById('pointCounter');
             const target = +counter.getAttribute('data-target');
-            const duration = 1000; // 1 second bago matapos ang bilang
-            const frameRate = 30; // Ilang beses mag uupdate per second
+            const duration = 1000;
+            const frameRate = 30;
             const totalFrames = Math.round(duration / (1000 / frameRate));
             let currentFrame = 0;
 
@@ -189,8 +216,6 @@ try {
                 const countInterval = setInterval(() => {
                     currentFrame++;
                     const progress = currentFrame / totalFrames;
-                    
-                    // Ease-out effect (bumabagal habang papalapit sa target)
                     const currentCount = Math.round(target * (1 - Math.pow(1 - progress, 3)));
                     
                     counter.innerText = currentCount;
@@ -204,34 +229,40 @@ try {
                 counter.innerText = target;
             }
 
-            // Progress Bar Fill Animation (may delay ng konti para mas dramatic)
+            // Smooth Progress Bar Animation
             setTimeout(() => {
                 const pb = document.getElementById('progressBar');
                 pb.style.width = pb.getAttribute('data-width');
             }, 400);
-
         });
 
-        // Profile Modal Logic
+        // Tailwind-powered Profile Modal Logic
         function openProfileModal(e) {
             e.preventDefault();
             const modal = document.getElementById('profileModal');
-            const content = modal.querySelector('.modal-content');
-            modal.style.display = 'flex';
-            // Trigger animation
+            const content = document.getElementById('profileContent');
+            
+            modal.classList.remove('hidden');
+            
+            // Timeout allows the display block to render before triggering opacity transition
             setTimeout(() => {
-                modal.style.opacity = '1';
-                content.style.transform = 'translateY(0)';
+                modal.classList.remove('opacity-0');
+                content.classList.remove('translate-y-5');
+                content.classList.add('translate-y-0');
             }, 10);
         }
 
         function closeProfileModal() {
             const modal = document.getElementById('profileModal');
-            const content = modal.querySelector('.modal-content');
-            modal.style.opacity = '0';
-            content.style.transform = 'translateY(20px)';
+            const content = document.getElementById('profileContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('translate-y-0');
+            content.classList.add('translate-y-5');
+            
+            // Wait for transition to finish before hiding completely
             setTimeout(() => {
-                modal.style.display = 'none';
+                modal.classList.add('hidden');
             }, 300);
         }
     </script>

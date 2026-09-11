@@ -79,47 +79,62 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL1TE Pickle Center - Portal</title>
 
-    <!-- Heto ang Favicon Code -->
     <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg">
-
-    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Google Fonts & Tailwind CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { gold: '#D4AF37' } } }
+      }
+    </script>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center font-sans p-4">
 
-    <div class="split-login-wrapper">
+    <!-- SPLIT SCREEN WRAPPER -->
+    <div class="flex flex-col md:flex-row w-full max-w-5xl bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border-t-4 md:border-t-0 md:border-l-4 border-gold">
         
-        <!-- KALIWANG SIDE: Branding (Mukhang para sa Players) -->
-        <div class="split-image">
-            <img src="assets/images/logo.jpg" alt="EL1TE Logo" style="width: 130px; border-radius: 50%; border: 3px solid #D4AF37; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
-            <h1>EL1TE VIP Club</h1>
-            <p>Welcome to your exclusive portal. Track your match points, view your rank, and redeem premium Pickleball rewards.</p>
+        <!-- KALIWANG SIDE: Branding -->
+        <!-- Note: Gumamit ako ng Tailwind arbitrary value para sa background image gradient -->
+        <div class="md:w-[55%] relative flex flex-col justify-center items-center p-10 text-center bg-[linear-gradient(to_right,rgba(17,28,48,0.7),rgba(26,42,71,0.9)),url('assets/images/login-bg.jpg')] bg-cover bg-center">
+            <img src="assets/images/logo.jpg" alt="EL1TE Logo" class="w-32 h-32 rounded-full border-4 border-gold shadow-lg mb-6 object-cover">
+            <h1 class="text-3xl font-bold text-gold mb-3 drop-shadow-md">EL1TE VIP Club</h1>
+            <p class="text-slate-300 text-sm leading-relaxed max-w-sm drop-shadow-md">
+                Welcome to your exclusive portal. Track your match points, view your rank, and redeem premium Pickleball rewards.
+            </p>
         </div>
 
-        <!-- KANANG SIDE: Form (Dual-purpose labels) -->
-        <div class="split-form">
-            <h2 style="color: #D4AF37; margin-bottom: 5px; text-align: center;">Member Access</h2>
-            <p style="text-align: center; color: #cbd5e1; margin-bottom: 25px; font-size: 14px;">Enter your account details to continue</p>
+        <!-- KANANG SIDE: Form -->
+        <div class="md:w-[45%] flex flex-col justify-center p-8 md:p-12 bg-slate-800/90">
+            <h2 class="text-2xl font-bold text-gold mb-1 text-center">Member Access</h2>
+            <p class="text-slate-400 text-sm mb-8 text-center">Enter your account details to continue</p>
 
             <?php if (!empty($error)): ?>
-                <div class="error-msg"><?= htmlspecialchars($error) ?></div>
+                <div class="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg text-sm mb-6 text-center">
+                    <?= htmlspecialchars($error) ?>
+                </div>
             <?php endif; ?>
 
-            <form action="index" method="POST">
+            <form action="index" method="POST" class="flex flex-col gap-5">
                 <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                 
-                <div class="input-group">
-                    <!-- Ang staff ay magta-type ng username, ang player ay magta-type ng Last Name -->
-                    <label for="username">Username / Last Name</label>
-                    <input type="text" id="username" name="username" placeholder="Enter Username or Last Name" required autocomplete="off">
+                <div>
+                    <label for="username" class="block text-sm text-slate-300 mb-1.5 font-medium">Username / Last Name</label>
+                    <input type="text" id="username" name="username" placeholder="Enter Username or Last Name" required autocomplete="off" 
+                           class="w-full p-3 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all">
                 </div>
 
-                <div class="input-group">
-                    <!-- Ang staff ay magta-type ng password, ang player ay magta-type ng QR Code No. -->
-                    <label for="password">Password / VIP Card No.</label>
-                    <input type="password" id="password" name="password" placeholder="Enter Password or VIP Card" required>
+                <div>
+                    <label for="password" class="block text-sm text-slate-300 mb-1.5 font-medium">Password / VIP Card No.</label>
+                    <input type="password" id="password" name="password" placeholder="Enter Password or VIP Card" required 
+                           class="w-full p-3 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all">
                 </div>
 
-                <button type="submit" class="btn-gold" style="margin-top: 15px;">Access My Account</button>
+                <button type="submit" class="w-full py-3 mt-4 bg-gold hover:bg-yellow-500 text-slate-900 font-bold rounded-lg shadow-lg hover:-translate-y-0.5 transition-all active:scale-95">
+                    Access My Account
+                </button>
             </form>
         </div>
 
